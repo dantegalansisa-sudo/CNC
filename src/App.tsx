@@ -10,6 +10,7 @@ import Services from './components/Services';
 import USClients from './components/USClients';
 import Process, { Values } from './components/Method';
 import Insights from './components/Insights';
+import CtaBand from './components/CtaBand';
 import { CallFloat, Contact, Faq, Footer } from './components/Closing';
 import { LangProvider, useLang } from './i18n';
 import { setLenis } from './utils/scroll';
@@ -53,9 +54,11 @@ export default function App() {
           <Manifesto />
           <About />
           <Services />
+          <CtaBand />
           <USClients />
           <Process />
           <Values />
+          <CtaBand variant="dark" />
           <Insights />
           <Faq />
           <Contact />

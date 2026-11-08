@@ -3,8 +3,8 @@ import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'fram
 import { MaskLine } from './RevealText';
 import MagneticButton from './MagneticButton';
 import { Monogram } from './Logo';
-import { Arrow, Facebook, Instagram, Mail, Phone, Scale, Spark } from './Icons';
-import { FIRM, TEL } from '../content';
+import { Arrow, Facebook, Instagram, Mail, Phone, Scale, Spark, WhatsAppLogo } from './Icons';
+import { FIRM, TEL, waLink } from '../content';
 import { useLang } from '../i18n';
 import { scrollToId } from '../utils/scroll';
 import { ease } from '../utils/easings';
@@ -86,9 +86,12 @@ function HeroDesktop() {
           <MagneticButton onClick={() => scrollToId('contacto')} className="btn btn--ink" cursor={h.cta.split(' ')[0]}>
             {h.cta} <span className="btn__ic"><Arrow size={16} /></span>
           </MagneticButton>
-          <MagneticButton href={TEL} className="btn btn--ghost">
-            <Phone size={16} /> {FIRM.phoneLabel}
+          <MagneticButton href={waLink(t.wa.msg)} external className="btn btn--wa" cursor="Chat">
+            <WhatsAppLogo size={24} /> {t.wa.cta}
           </MagneticButton>
+          <a className="hero-d__call" href={TEL}>
+            <Phone size={14} /> {t.wa.or} {FIRM.phoneLabel}
+          </a>
         </motion.div>
 
         <motion.div className="hero-d__stats" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: INTRO + 0.8, duration: 1 }}>
@@ -167,7 +170,7 @@ function HeroDesktop() {
 
         <motion.div className="notch notch--left" initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: INTRO + 0.75, duration: 0.9, ease: ease('out') }}>
           <span className="nbubble nbubble--photo" />
-          <a className="nbubble nbubble--blush" href={TEL} aria-label={h.call}><Phone size={18} /></a>
+          <a className="nbubble nbubble--wa" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer" aria-label={t.wa.cta} data-cursor="Chat"><WhatsAppLogo size={34} /></a>
           <button className="nbubble nbubble--ink" onClick={() => scrollToId('servicios')} aria-label={t.practice.eyebrow} data-cursor="Areas">
             <Arrow size={20} />
           </button>
@@ -242,8 +245,8 @@ function HeroMobile() {
             <button className="btn btn--ink btn--sm" onClick={() => scrollToId('contacto')}>
               {t.navCta}
             </button>
-            <a className="mcard__go" href={TEL} aria-label={h.call}>
-              <Phone size={18} />
+            <a className="mcard__go mcard__go--wa" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer" aria-label={t.wa.cta}>
+              <WhatsAppLogo size={30} />
             </a>
           </div>
         </motion.div>

@@ -14,6 +14,7 @@ export const FIRM = {
 };
 
 export const TEL = `tel:${FIRM.phone}`;
+export const waLink = (msg: string) => `https://wa.me/${FIRM.phone.replace('+', '')}?text=${encodeURIComponent(msg)}`;
 
 export type Lang = 'en' | 'es';
 export type PracticeKey = 'contracts' | 'notary' | 'civil' | 'family' | 'admin';
@@ -288,6 +289,26 @@ const en = {
       ],
     },
   },
+  wa: {
+    label: 'WhatsApp',
+    cta: 'Chat on WhatsApp',
+    short: 'WhatsApp us',
+    msg: 'Hello CNC Law Firm, I would like to schedule a consultation.',
+    practiceMsg: 'Hello CNC Law Firm, I would like to discuss a matter about: ',
+    or: 'or',
+    contactT: 'Prefer a quick chat?',
+    contactD: 'Message us on WhatsApp and we’ll help you schedule your consultation.',
+  },
+  band: {
+    eyebrow: 'Ready when you are',
+    title: ['Let’s talk about', 'your case today.'],
+    text: 'Choose the way that works best for you. We respond promptly — in English or Spanish.',
+    book: 'Schedule a consultation',
+    call: 'Call',
+    note: 'Consultations by appointment · In person or virtual',
+    perks: ['Prompt response', 'Bilingual attention', 'In person or virtual'],
+  },
+  bar: { call: 'Call', wa: 'WhatsApp', book: 'Book' },
   call: 'Call now',
 };
 
@@ -560,6 +581,26 @@ const es: typeof en = {
       ],
     },
   },
+  wa: {
+    label: 'WhatsApp',
+    cta: 'Escríbenos por WhatsApp',
+    short: 'WhatsApp',
+    msg: 'Hola CNC Law Firm, me gustaría agendar una consulta.',
+    practiceMsg: 'Hola CNC Law Firm, me gustaría consultar un asunto sobre: ',
+    or: 'o',
+    contactT: '¿Prefieres una conversación rápida?',
+    contactD: 'Escríbenos por WhatsApp y te ayudamos a agendar tu consulta.',
+  },
+  band: {
+    eyebrow: 'Estamos listos',
+    title: ['Hablemos de', 'tu caso hoy.'],
+    text: 'Elige la forma que mejor te funcione. Respondemos con prontitud, en español o inglés.',
+    book: 'Agendar una consulta',
+    call: 'Llamar',
+    note: 'Consultas por cita previa · En persona o virtual',
+    perks: ['Respuesta rápida', 'Atención bilingüe', 'En persona o virtual'],
+  },
+  bar: { call: 'Llamar', wa: 'WhatsApp', book: 'Agendar' },
   call: 'Llamar ahora',
 };
 

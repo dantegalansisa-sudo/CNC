@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
 import Logo, { Monogram } from './Logo';
-import { FIRM, TEL } from '../content';
+import { FIRM, TEL, waLink } from '../content';
 import { useLang } from '../i18n';
 import { lockScroll, scrollToId } from '../utils/scroll';
 import { ease } from '../utils/easings';
-import { Arrow, Facebook, Instagram, Mail, Phone } from './Icons';
+import { Arrow, Facebook, Instagram, Mail, Phone, WhatsAppLogo } from './Icons';
 import { INTRO } from './Loader';
 
 export function LangToggle({ className = '' }: { className?: string }) {
@@ -87,6 +87,9 @@ export default function Nav() {
 
           <div className="nav__right">
             <LangToggle className="nav__lang" />
+            <a className="nav__wa" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer" aria-label={t.wa.cta} title={t.wa.cta}>
+              <WhatsAppLogo size={30} />
+            </a>
             <a className="nav__phone" href={TEL} aria-label={`${t.call} ${FIRM.phoneLabel}`}>
               <Phone size={16} />
               <span>{FIRM.phoneLabel}</span>
@@ -142,6 +145,9 @@ export default function Nav() {
             >
               <a className="btn btn--gold btn--block" href="#contacto" onClick={(e) => { e.preventDefault(); go('contacto'); }}>
                 {t.menuCta} <Arrow size={18} />
+              </a>
+              <a className="btn btn--wa btn--block" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer">
+                <WhatsAppLogo size={24} /> {t.wa.cta}
               </a>
               <a className="btn btn--line btn--block" href={TEL}>
                 <Phone size={17} /> {FIRM.phoneLabel}

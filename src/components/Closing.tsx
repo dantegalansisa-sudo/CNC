@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-motion';
-import { FIRM, TEL, type PracticeKey } from '../content';
+import { FIRM, TEL, waLink, type PracticeKey } from '../content';
 import { useLang } from '../i18n';
 import { FadeUp, MaskLine } from './RevealText';
 import Logo from './Logo';
-import { Arrow, Clock, Facebook, Instagram, Mail, Phone, Pin, Plus, Spark } from './Icons';
+import { Arrow, Clock, Facebook, Instagram, Mail, Phone, Pin, Plus, Spark, WhatsAppLogo } from './Icons';
 import { useParallax } from '../hooks/useParallax';
 import { lockScroll, scrollToId } from '../utils/scroll';
 import { ease } from '../utils/easings';
@@ -23,8 +23,8 @@ export function Faq() {
             <MaskLine delay={0.1}><em>{f.title[1]}</em></MaskLine>
           </h2>
           <FadeUp>
-            <a className="faq__card" href={TEL}>
-              <span className="faq__card-ic"><Phone size={20} /></span>
+            <a className="faq__card" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer">
+              <span className="faq__card-ic faq__card-ic--wa"><WhatsAppLogo size={48} /></span>
               <span>
                 <b>{f.cardT}</b>
                 <small>{f.cardD}</small>
@@ -166,6 +166,14 @@ export function Contact() {
                 </AnimatePresence>
               </form>
             </FadeUp>
+            <a className="contact__wa" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer">
+              <WhatsAppLogo size={44} />
+              <span>
+                <b>{t.wa.contactT}</b>
+                <small>{t.wa.contactD}</small>
+              </span>
+              <Arrow size={18} />
+            </a>
             <ul className="contact__info">
               <li><a href={TEL}><Phone size={17} /> {FIRM.phoneLabel}</a></li>
               <li><a href={`mailto:${FIRM.email}`}><Mail size={18} /> {FIRM.email}</a></li>
@@ -243,6 +251,7 @@ export function Footer() {
             <div className="footer__social">
               <a href={FIRM.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Instagram size={18} /></a>
               <a href={FIRM.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Facebook size={17} /></a>
+              <a href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><WhatsAppLogo size={22} /></a>
               <a href={`mailto:${FIRM.email}`} aria-label="Email"><Mail size={18} /></a>
               <a href={TEL} aria-label={t.call}><Phone size={17} /></a>
             </div>
@@ -258,6 +267,7 @@ export function Footer() {
           <div>
             <h3>{f.contact}</h3>
             <a href={TEL}>{FIRM.phoneLabel}</a>
+            <a href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer">WhatsApp · {FIRM.phoneLabel}</a>
             <a href={`mailto:${FIRM.email}`}>{FIRM.email}</a>
             <span>{FIRM.city}</span>
           </div>
@@ -298,21 +308,49 @@ export function CallFloat() {
   const [show, setShow] = useState(false);
   useMotionValueEvent(scrollY, 'change', (v) => setShow(v > 700));
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.a
-          className="wa-float"
-          href={TEL}
-          aria-label={`${t.call} ${FIRM.phoneLabel}`}
-          initial={{ scale: 0, rotate: -45 }}
-          animate={{ scale: 1, rotate: 0 }}
-          exit={{ scale: 0 }}
-          transition={{ duration: 0.5, ease: ease('bounce') }}
-        >
-          <Phone size={24} />
-          <span className="wa-float__tip">{t.call} · {FIRM.phoneLabel}</span>
-        </motion.a>
-      )}
-    </AnimatePresence>
+    <>
+      <AnimatePresence>
+        {show && (
+          <motion.a
+            className="wa-float wa-float--green"
+            href={waLink(t.wa.msg)}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={t.wa.cta}
+            initial={{ scale: 0, rotate: -45 }}
+            animate={{ scale: 1, rotate: 0 }}
+            exit={{ scale: 0 }}
+            transition={{ duration: 0.5, ease: ease('bounce') }}
+          >
+            <WhatsAppLogo size={60} />
+            <span className="wa-float__tip">{t.wa.cta}</span>
+          </motion.a>
+        )}
+      </AnimatePresence>
+
+      {/* Mobile: persistent action bar — the standard pattern on U.S. law-firm sites */}
+      <AnimatePresence>
+        {show && (
+          <motion.nav
+            className="actionbar"
+            aria-label="Quick contact"
+            initial={{ y: 100 }}
+            animate={{ y: 0 }}
+            exit={{ y: 100 }}
+            transition={{ duration: 0.5, ease: ease('premium') }}
+          >
+            <a href={TEL}>
+              <Phone size={18} /> {t.bar.call}
+            </a>
+            <a href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer" className="actionbar__wa">
+              <WhatsAppLogo size={22} /> {t.bar.wa}
+            </a>
+            <a href="#contacto" onClick={(e) => { e.preventDefault(); scrollToId('contacto'); }} className="actionbar__book">
+              {t.bar.book} <Arrow size={15} />
+            </a>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+    </>
   );
 }

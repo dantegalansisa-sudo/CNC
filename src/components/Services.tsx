@@ -1,11 +1,11 @@
 import { useRef } from 'react';
 import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
-import type { Content, PracticeKey } from '../content';
+import { waLink, type Content, type PracticeKey } from '../content';
 import { useLang } from '../i18n';
 import { FadeUp, MaskLine } from './RevealText';
 import MagneticButton from './MagneticButton';
 import ServiceVisual from './visuals/ServiceVisuals';
-import { Arrow, Check, Spark } from './Icons';
+import { Arrow, Check, Spark, WhatsAppLogo } from './Icons';
 import { scrollToId } from '../utils/scroll';
 import { ease } from '../utils/easings';
 
@@ -70,6 +70,15 @@ function ServiceCard({
             <MagneticButton onClick={() => requestArea(s.key)} className="btn btn--card" cursor="Contact">
               {t.practice.cta} <span className="btn__ic"><Arrow size={15} /></span>
             </MagneticButton>
+            <a
+              className="scard__wa"
+              href={waLink(`${t.wa.practiceMsg}${s.title} ${s.accent}`)}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`${t.wa.cta} — ${s.title} ${s.accent}`}
+            >
+              <WhatsAppLogo size={26} /> <span>{t.wa.short}</span>
+            </a>
           </div>
         </div>
         <div className="scard__visual">

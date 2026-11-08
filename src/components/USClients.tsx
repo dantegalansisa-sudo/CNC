@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import { FadeUp, MaskLine } from './RevealText';
 import MagneticButton from './MagneticButton';
-import { Arrow, Building, Doc, Globe, Scale, Spark } from './Icons';
+import { Arrow, Building, Doc, Globe, Scale, Spark, WhatsAppLogo } from './Icons';
 import { useLang } from '../i18n';
+import { waLink } from '../content';
 import { ease } from '../utils/easings';
 import { requestArea } from './Services';
 
@@ -71,6 +72,9 @@ export default function USClients() {
               <MagneticButton onClick={() => requestArea('')} className="btn btn--gold" cursor="Contact">
                 {u.cta} <span className="btn__ic"><Arrow size={16} /></span>
               </MagneticButton>
+              <a className="btn btn--wa usc__wa" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer">
+                <WhatsAppLogo size={24} /> {t.wa.short}
+              </a>
             </FadeUp>
           </div>
 
