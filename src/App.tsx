@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { MotionConfig } from 'framer-motion';
 import Lenis from 'lenis';
-import CustomCursor from './components/CustomCursor';
 import Loader from './components/Loader';
 import Nav from './components/Nav';
 import Hero from './components/Hero';
@@ -46,7 +45,6 @@ export default function App() {
     <LangProvider>
       <MotionConfig reducedMotion="user">
         <SkipLink />
-        <CustomCursor />
         <Loader />
         <Nav />
         <main id="main">

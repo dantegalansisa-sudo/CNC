@@ -297,11 +297,6 @@ em {
 /* =========================================================
    CURSOR / LOADER / GRAIN
    ========================================================= */
-html.has-cursor,
-html.has-cursor * {
-  cursor: none !important;
-}
-
 .cursor-dot,
 .cursor-ring {
   position: fixed;
