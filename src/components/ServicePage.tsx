@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { FIRM, TEL, waLink } from '../content';
@@ -11,7 +11,9 @@ import { Arrow, Check, Clock, Globe, Mail, Phone, Pin, Plus, Spark, Video, Whats
 import { scrollToId } from '../utils/scroll';
 import { ease } from '../utils/easings';
 import { INTRO } from './Loader';
-import { DrawLine, LiveCard, useFloatProgress, useTimelineFill } from './fx/Live';
+import RequestForm from './RequestForm';
+import { DrawLine, LiveCard, useFloatProgress } from './fx/Live';
+import { TravelerSeal, useStepTraveler } from './fx/Traveler';
 
 const FACT_ICONS = [Clock, Video, Globe];
 
@@ -67,143 +69,6 @@ function Accordion({ items }: { items: readonly { q: string; a: string }[] }) {
   );
 }
 
-type Form = {
-  name: string;
-  email: string;
-  phone: string;
-  service: string;
-  mode: string;
-  contact: string;
-  urgency: string;
-  msg: string;
-  ok: boolean;
-};
-
-function RequestForm({ title, offer }: { title: string; offer: readonly { t: string }[] }) {
-  const { lang } = useLang();
-  const f = UI[lang].form;
-  const formRef = useRef<HTMLFormElement>(null);
-  const [sent, setSent] = useState(false);
-  const [form, setForm] = useState<Form>({
-    name: '', email: '', phone: '', service: '', mode: f.modes[0], contact: f.contacts[0], urgency: f.urgencies[0], msg: '', ok: false,
-  });
-
-  const set = (k: keyof Omit<Form, 'ok'>) =>
-    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
-      setForm((s) => ({ ...s, [k]: e.target.value }));
-
-  const summary = () =>
-    [
-      `${f.subject}: ${title}`,
-      `${f.service}: ${form.service || f.other}`,
-      `${f.name}: ${form.name}`,
-      `${f.email}: ${form.email}`,
-      `${f.phone}: ${form.phone}`,
-      `${f.mode}: ${form.mode}`,
-      `${f.contact}: ${form.contact}`,
-      `${f.urgency}: ${form.urgency}`,
-      '',
-      form.msg,
-    ].join('\n');
-
-  // No backend yet: compose the request in the visitor's email app.
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const subject = `${f.subject}: ${title} — ${form.name}`;
-    window.location.href = `mailto:${FIRM.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(summary())}`;
-    setSent(true);
-  };
-
-  const sendWa = () => {
-    if (!formRef.current?.reportValidity()) return;
-    window.open(waLink(summary()), '_blank', 'noopener,noreferrer');
-  };
-
-  const Chips = ({ k, options }: { k: 'mode' | 'contact' | 'urgency'; options: readonly string[] }) => (
-    <div className="rform__chips" role="radiogroup">
-      {options.map((o) => (
-        <label key={o} className={form[k] === o ? 'is-on' : ''}>
-          <input type="radio" name={k} value={o} checked={form[k] === o} onChange={set(k)} />
-          {o}
-        </label>
-      ))}
-    </div>
-  );
-
-  return (
-    <form className="cform rform" ref={formRef} onSubmit={submit}>
-      <fieldset>
-        <legend><span>01</span> {f.steps[0]}</legend>
-        <div className="cform__row">
-          <label>
-            <span>{f.name}</span>
-            <input required autoComplete="name" value={form.name} onChange={set('name')} />
-          </label>
-          <label>
-            <span>{f.phone}</span>
-            <input required type="tel" autoComplete="tel" value={form.phone} onChange={set('phone')} />
-          </label>
-        </div>
-        <label>
-          <span>{f.email}</span>
-          <input required type="email" autoComplete="email" value={form.email} onChange={set('email')} />
-        </label>
-        <div className="rform__group">
-          <span>{f.contact}</span>
-          <Chips k="contact" options={f.contacts} />
-        </div>
-      </fieldset>
-
-      <fieldset>
-        <legend><span>02</span> {f.steps[1]}</legend>
-        <label>
-          <span>{f.service}</span>
-          <select value={form.service} onChange={set('service')}>
-            <option value="">{f.servicePh}</option>
-            {offer.map((o) => (
-              <option key={o.t} value={o.t}>{o.t}</option>
-            ))}
-            <option value={f.other}>{f.other}</option>
-          </select>
-        </label>
-        <div className="rform__group">
-          <span>{f.mode}</span>
-          <Chips k="mode" options={f.modes} />
-        </div>
-        <div className="rform__group">
-          <span>{f.urgency}</span>
-          <Chips k="urgency" options={f.urgencies} />
-        </div>
-        <label>
-          <span>{f.msg}</span>
-          <textarea required rows={4} value={form.msg} onChange={set('msg')} placeholder={f.msgPh} />
-        </label>
-      </fieldset>
-
-      <label className="cform__consent">
-        <input type="checkbox" required checked={form.ok} onChange={(e) => setForm((s) => ({ ...s, ok: e.target.checked }))} />
-        <span>{f.consent}</span>
-      </label>
-
-      <div className="rform__actions">
-        <button className="btn btn--ink" type="submit">
-          {f.send} <span className="btn__ic"><Mail size={16} /></span>
-        </button>
-        <button className="btn btn--wa" type="button" onClick={sendWa}>
-          <WhatsAppLogo size={24} /> {f.sendWa}
-        </button>
-      </div>
-      <AnimatePresence>
-        {sent && (
-          <motion.p className="rform__note" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} role="status">
-            {f.sent}
-          </motion.p>
-        )}
-      </AnimatePresence>
-    </form>
-  );
-}
-
 export default function ServicePage() {
   const { slug } = useParams();
   const key = keyFromSlug(slug);
@@ -215,7 +80,7 @@ export default function ServicePage() {
   useSeo(page?.seo.title ?? t.meta.title, page?.seo.description ?? '', t.meta.title);
   const offerFloat = useFloatProgress();
   const othersFloat = useFloatProgress();
-  const steps = useTimelineFill();
+  const steps = useStepTraveler<HTMLOListElement>('x', ['start 0.8', 'end 0.45']);
 
   if (!key || !item || !page) return <Navigate to="/" replace />;
 
@@ -339,12 +204,14 @@ export default function ServicePage() {
             <MaskLine delay={0.1}><em>{ui.stepsTitle[1]}</em></MaskLine>
           </h2>
           <ol className="sp-steps__list" ref={steps.ref}>
-            <span className="sp-steps__track" aria-hidden>
+            <span className="sp-steps__track" aria-hidden style={{ left: steps.start, width: Math.max(0, steps.end - steps.start), right: 'auto' }}>
               <motion.span style={{ scaleX: steps.fill }} />
             </span>
+            <TravelerSeal axis="x" pos={steps.pos} />
             {page.steps.map((st, i) => (
-              <LiveCard as="li" key={st.t} index={i}>
+              <LiveCard as="li" key={st.t} index={i} className={`${steps.active === i ? 'is-active' : ''} ${steps.active > i ? 'is-done' : ''}`}>
                 <motion.span
+                  data-node
                   className="sp-steps__node"
                   initial={{ scale: 0 }}
                   whileInView={{ scale: 1 }}
@@ -444,7 +311,7 @@ export default function ServicePage() {
               <li><Clock size={18} /> {t.contact.byAppt}</li>
             </ul>
           </div>
-          <FadeUp className="sp-request__card">
+          <FadeUp className="sp-request__card sp-request__card--paper">
             <RequestForm title={title} offer={page.offer} />
           </FadeUp>
         </div>

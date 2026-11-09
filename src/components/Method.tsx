@@ -1,18 +1,16 @@
-import { useRef } from 'react';
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { FadeUp, MaskLine } from './RevealText';
 import { Globe, Phone, Video } from './Icons';
 import { ease } from '../utils/easings';
 import { useLang } from '../i18n';
 import { LiveCard, useFloatProgress } from './fx/Live';
+import { TravelerSeal, useStepTraveler } from './fx/Traveler';
 
 /** How to schedule a consultation — timeline that fills on scroll. */
 export default function Process() {
   const { t } = useLang();
   const p = t.process;
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ['start 0.7', 'end 0.6'] });
-  const fill = useSpring(scrollYProgress, { stiffness: 90, damping: 22 });
+  const trav = useStepTraveler<HTMLDivElement>('y', ['start 0.7', 'end 0.55']);
 
   return (
     <section id="proceso" className="method">
@@ -28,20 +26,21 @@ export default function Process() {
           </FadeUp>
         </div>
 
-        <div className="method__steps" ref={ref}>
-          <div className="method__track">
-            <motion.span style={{ scaleY: fill }} />
+        <div className="method__steps" ref={trav.ref}>
+          <div className="method__track" style={{ top: trav.start, height: Math.max(0, trav.end - trav.start), bottom: 'auto' }}>
+            <motion.span style={{ scaleY: trav.fill }} />
           </div>
+          <TravelerSeal axis="y" pos={trav.pos} />
           {p.steps.map((s, i) => (
             <motion.div
               key={s.n}
-              className="step"
+              className={`step ${trav.active === i ? 'is-active' : ''} ${trav.active > i ? 'is-done' : ''}`}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.6 }}
               transition={{ duration: 0.8, delay: i * 0.05, ease: ease('out') }}
             >
-              <span className="step__dot" />
+              <span className="step__dot" data-node />
               <span className="step__n">{s.n}</span>
               <div>
                 <h3>
