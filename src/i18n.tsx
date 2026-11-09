@@ -20,7 +20,6 @@ export function LangProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     document.documentElement.lang = lang;
-    document.title = CONTENT[lang].meta.title;
     try {
       localStorage.setItem('cnc-lang', lang);
     } catch {

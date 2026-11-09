@@ -6,7 +6,10 @@ import { FadeUp, MaskLine } from './RevealText';
 import Logo from './Logo';
 import { Arrow, Clock, Facebook, Instagram, Mail, Phone, Pin, Plus, Spark, WhatsAppLogo } from './Icons';
 import { useParallax } from '../hooks/useParallax';
-import { lockScroll, scrollToId } from '../utils/scroll';
+import { Link } from 'react-router-dom';
+import { lockScroll } from '../utils/scroll';
+import { useGo } from '../utils/useGo';
+import { servicePath } from '../servicePages';
 import { ease } from '../utils/easings';
 
 export function Faq() {
@@ -259,9 +262,9 @@ export function Footer() {
           <nav aria-label={f.practice}>
             <h3>{f.practice}</h3>
             {t.practice.items.map((it) => (
-              <a key={it.key} href={`#srv-${it.key}`} onClick={(e) => { e.preventDefault(); scrollToId(`srv-${it.key}`); }}>
+              <Link key={it.key} to={servicePath(it.key)}>
                 {it.title} {it.accent}
-              </a>
+              </Link>
             ))}
           </nav>
           <div>
@@ -306,6 +309,7 @@ export function CallFloat() {
   const { t } = useLang();
   const { scrollY } = useScroll();
   const [show, setShow] = useState(false);
+  const go = useGo();
   useMotionValueEvent(scrollY, 'change', (v) => setShow(v > 700));
   return (
     <>
@@ -345,7 +349,7 @@ export function CallFloat() {
             <a href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer" className="actionbar__wa">
               <WhatsAppLogo size={22} /> {t.bar.wa}
             </a>
-            <a href="#contacto" onClick={(e) => { e.preventDefault(); scrollToId('contacto'); }} className="actionbar__book">
+            <a href="/#contacto" onClick={(e) => { e.preventDefault(); go('contacto'); }} className="actionbar__book">
               {t.bar.book} <Arrow size={15} />
             </a>
           </motion.nav>

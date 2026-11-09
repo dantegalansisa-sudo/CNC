@@ -6,7 +6,9 @@ import { FadeUp, MaskLine } from './RevealText';
 import MagneticButton from './MagneticButton';
 import ServiceVisual from './visuals/ServiceVisuals';
 import { Arrow, Check, Spark, WhatsAppLogo } from './Icons';
+import { Link } from 'react-router-dom';
 import { scrollToId } from '../utils/scroll';
+import { servicePath, UI } from '../servicePages';
 import { ease } from '../utils/easings';
 
 type Item = Content['practice']['items'][number];
@@ -32,7 +34,7 @@ function ServiceCard({
   range: [number, number];
   targetScale: number;
 }) {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const last = i === total - 1;
   const scale = useTransform(progress, range, [1, last ? 1 : targetScale]);
   const dim = useTransform(progress, range, [0, last ? 0 : 0.35]);
@@ -70,6 +72,9 @@ function ServiceCard({
             <MagneticButton onClick={() => requestArea(s.key)} className="btn btn--card" cursor="Contact">
               {t.practice.cta} <span className="btn__ic"><Arrow size={15} /></span>
             </MagneticButton>
+            <Link to={servicePath(s.key)} className="scard__more">
+              {UI[lang].view} <Arrow size={14} />
+            </Link>
             <a
               className="scard__wa"
               href={waLink(`${t.wa.practiceMsg}${s.title} ${s.accent}`)}

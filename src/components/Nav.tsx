@@ -3,7 +3,10 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from 'framer-
 import Logo, { Monogram } from './Logo';
 import { FIRM, TEL, waLink } from '../content';
 import { useLang } from '../i18n';
-import { lockScroll, scrollToId } from '../utils/scroll';
+import { Link, useLocation } from 'react-router-dom';
+import { lockScroll } from '../utils/scroll';
+import { useGo } from '../utils/useGo';
+import { servicePath } from '../servicePages';
 import { ease } from '../utils/easings';
 import { Arrow, Facebook, Instagram, Mail, Phone, WhatsAppLogo } from './Icons';
 import { INTRO } from './Loader';
@@ -30,6 +33,9 @@ export default function Nav() {
   const [hidden, setHidden] = useState(false);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState('inicio');
+  const { pathname } = useLocation();
+  const onHome = pathname === '/';
+  const goTo = useGo();
 
   useMotionValueEvent(scrollY, 'change', (v) => {
     const prev = scrollY.getPrevious() ?? 0;
@@ -38,6 +44,10 @@ export default function Nav() {
   });
 
   useEffect(() => {
+    if (!onHome) {
+      setActive(pathname.startsWith('/services') ? 'servicios' : '');
+      return;
+    }
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
       { rootMargin: '-45% 0px -50% 0px' }
@@ -47,42 +57,61 @@ export default function Nav() {
       if (el) io.observe(el);
     });
     return () => io.disconnect();
-  }, [t]);
+  }, [t, onHome, pathname]);
+
+  useEffect(() => setOpen(false), [pathname]);
 
   useEffect(() => lockScroll(open), [open]);
 
   const go = (id: string) => {
     setOpen(false);
-    setTimeout(() => scrollToId(id), open ? 450 : 0);
+    setTimeout(() => goTo(id), open ? 450 : 0);
   };
 
   return (
     <>
       <motion.header
-        className={`nav ${scrolled ? 'nav--scrolled' : ''} ${open ? 'nav--open' : ''}`}
+        className={`nav ${scrolled || !onHome ? 'nav--scrolled' : ''} ${open ? 'nav--open' : ''}`}
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: hidden ? -110 : 0, opacity: 1 }}
         transition={{ duration: 0.8, delay: hidden || scrolled ? 0 : INTRO, ease: ease('premium') }}
       >
         <div className="nav__inner">
-          <a href="#inicio" onClick={(e) => { e.preventDefault(); go('inicio'); }} aria-label="CNC Law Firm">
+          <a href="/" onClick={(e) => { e.preventDefault(); go('inicio'); }} aria-label="CNC Law Firm">
             <Logo />
           </a>
 
           <nav className="nav__links" aria-label="Main">
-            {t.nav.map((n) => (
-              <a
-                key={n.id}
-                href={`#${n.id}`}
-                className={active === n.id ? 'is-active' : ''}
-                onClick={(e) => { e.preventDefault(); go(n.id); }}
-              >
-                {active === n.id && (
-                  <motion.span layoutId="nav-pill" className="nav__pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />
-                )}
-                <span>{n.label}</span>
-              </a>
-            ))}
+            {t.nav.map((n) => {
+              const link = (
+                <a
+                  key={n.id}
+                  href={`/#${n.id}`}
+                  className={active === n.id ? 'is-active' : ''}
+                  onClick={(e) => { e.preventDefault(); go(n.id); }}
+                >
+                  {active === n.id && (
+                    <motion.span layoutId="nav-pill" className="nav__pill" transition={{ type: 'spring', stiffness: 380, damping: 32 }} />
+                  )}
+                  <span>{n.label}</span>
+                </a>
+              );
+              if (n.id !== 'servicios') return link;
+              return (
+                <div className="nav__drop" key={n.id}>
+                  {link}
+                  <div className="nav__panel">
+                    {t.practice.items.map((it) => (
+                      <Link key={it.key} to={servicePath(it.key)} className={pathname === servicePath(it.key) ? 'is-current' : ''}>
+                        <small>{it.n}</small>
+                        <span>{it.title} {it.accent}</span>
+                        <Arrow size={13} />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </nav>
 
           <div className="nav__right">
@@ -94,7 +123,7 @@ export default function Nav() {
               <Phone size={16} />
               <span>{FIRM.phoneLabel}</span>
             </a>
-            <a className="nav__cta" href="#contacto" onClick={(e) => { e.preventDefault(); go('contacto'); }}>
+            <a className="nav__cta" href="/#contacto" onClick={(e) => { e.preventDefault(); go('contacto'); }}>
               <span>{t.navCta}</span>
               <Arrow size={15} />
             </a>
@@ -122,7 +151,7 @@ export default function Nav() {
                 <li key={n.id}>
                   <span className="mask">
                     <motion.a
-                      href={`#${n.id}`}
+                      href={`/#${n.id}`}
                       onClick={(e) => { e.preventDefault(); go(n.id); }}
                       initial={{ y: '110%' }}
                       animate={{ y: 0 }}
@@ -137,13 +166,26 @@ export default function Nav() {
               ))}
             </ul>
             <motion.div
+              className="menu__services"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ delay: 0.5, duration: 0.6 }}
+            >
+              {t.practice.items.map((it) => (
+                <Link key={it.key} to={servicePath(it.key)}>
+                  {it.title} {it.accent}
+                </Link>
+              ))}
+            </motion.div>
+            <motion.div
               className="menu__foot"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
               transition={{ delay: 0.55, duration: 0.6 }}
             >
-              <a className="btn btn--gold btn--block" href="#contacto" onClick={(e) => { e.preventDefault(); go('contacto'); }}>
+              <a className="btn btn--gold btn--block" href="/#contacto" onClick={(e) => { e.preventDefault(); go('contacto'); }}>
                 {t.menuCta} <Arrow size={18} />
               </a>
               <a className="btn btn--wa btn--block" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer">
