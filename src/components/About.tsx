@@ -48,6 +48,24 @@ export default function About() {
   const { ref, y } = useParallax(40);
   return (
     <section id="sobre-mi" className="about">
+      <motion.div
+        className="about__seam"
+        initial={{ scale: 0.4, rotate: -120, opacity: 0 }}
+        whileInView={{ scale: 1, rotate: 0, opacity: 1 }}
+        viewport={{ once: true, amount: 1 }}
+        transition={{ duration: 1.2, ease: ease('premium') }}
+        aria-hidden
+      >
+        <svg viewBox="0 0 100 100" className="about__seam-ring">
+          <defs>
+            <path id="about-seam" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0" />
+          </defs>
+          <text>
+            <textPath href="#about-seam">CYNTHIA MORALES NIEVES · {t.hero.sigRole} · </textPath>
+          </text>
+        </svg>
+        <img src="/images/cnc-mark-light.png" alt="" draggable={false} />
+      </motion.div>
       <div className="container about__grid">
         <motion.div className="about__visual" ref={ref} initial="hidden" whileInView="show" viewport={{ once: true, amount: 0.25 }}>
           <motion.div
@@ -92,9 +110,9 @@ export default function About() {
         </motion.div>
 
         <div className="about__content">
-          <p className="eyebrow"><span className="eyebrow__line" /> {a.eyebrow}</p>
-          <h2 className="h2">
-            <MaskLine>{a.h1}</MaskLine>
+          <p className="eyebrow about__eyebrow"><span className="eyebrow__line" /> {a.eyebrow}</p>
+          <h2 className="h2 about__name">
+            <MaskLine><small className="about__title">Lcda.</small> {a.h1}</MaskLine>
             <MaskLine delay={0.1}>{a.h2a} <em>{a.h2b}</em></MaskLine>
           </h2>
           <FadeUp>
