@@ -3,8 +3,8 @@ import { FadeUp, MaskLine } from './RevealText';
 import MagneticButton from './MagneticButton';
 import { Arrow, Building, Doc, Globe, Scale, Spark, WhatsAppLogo } from './Icons';
 import { useLang } from '../i18n';
+import { LiveCard } from './fx/Live';
 import { waLink } from '../content';
-import { ease } from '../utils/easings';
 import { requestArea } from './Services';
 
 const ICONS = [Scale, Doc, Building, Globe];
@@ -78,30 +78,18 @@ export default function USClients() {
             </FadeUp>
           </div>
 
-          <motion.ul
-            className="usc__grid"
-            initial="h"
-            whileInView="v"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={{ v: { transition: { staggerChildren: 0.1 } } }}
-          >
+          <ul className="usc__grid">
             {u.items.map((it, i) => {
               const Icon = ICONS[i];
               return (
-                <motion.li
-                  key={it.t}
-                  variants={{
-                    h: { opacity: 0, y: 40 },
-                    v: { opacity: 1, y: 0, transition: { duration: 0.7, ease: ease('premium') } },
-                  }}
-                >
+                <LiveCard as="li" key={it.t} index={i}>
                   <span className="usc__ic"><Icon size={20} /></span>
                   <h3>{it.t}</h3>
                   <p>{it.d}</p>
-                </motion.li>
+                </LiveCard>
               );
             })}
-          </motion.ul>
+          </ul>
         </div>
       </div>
     </section>

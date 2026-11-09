@@ -4,6 +4,7 @@ import { FadeUp, MaskLine } from './RevealText';
 import { Globe, Phone, Video } from './Icons';
 import { ease } from '../utils/easings';
 import { useLang } from '../i18n';
+import { LiveCard, useFloatProgress } from './fx/Live';
 
 /** How to schedule a consultation — timeline that fills on scroll. */
 export default function Process() {
@@ -61,6 +62,7 @@ const VALUE_ICONS = [Globe, Video, Phone];
 export function Values() {
   const { t } = useLang();
   const v = t.values;
+  const float = useFloatProgress();
   return (
     <section className="audience">
       <div className="container">
@@ -71,31 +73,19 @@ export function Values() {
             <MaskLine delay={0.1}><em>{v.title[1]}</em></MaskLine>
           </h2>
         </div>
-        <motion.ul
-          className="audience__list audience__list--3"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          variants={{ visible: { transition: { staggerChildren: 0.09, delayChildren: 0.1 } } }}
-        >
+        <ul className="audience__list audience__list--3" ref={float.ref as unknown as React.Ref<HTMLUListElement>}>
           {v.items.map((a, i) => {
             const Icon = VALUE_ICONS[i];
             return (
-              <motion.li
-                key={a.t}
-                variants={{
-                  hidden: { opacity: 0, y: 48, scale: 0.96 },
-                  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.65, ease: ease('premium') } },
-                }}
-              >
+              <LiveCard as="li" key={a.t} index={i} depth={[0.6, 1.2, 0.8][i % 3]} progress={float.progress}>
                 <span className="audience__n">0{i + 1}</span>
                 <h3>{a.t}</h3>
                 <p>{a.d}</p>
                 <span className="audience__arrow"><Icon size={18} /></span>
-              </motion.li>
+              </LiveCard>
             );
           })}
-        </motion.ul>
+        </ul>
       </div>
     </section>
   );

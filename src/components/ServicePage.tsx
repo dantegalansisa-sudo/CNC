@@ -11,6 +11,7 @@ import { Arrow, Check, Clock, Globe, Mail, Phone, Pin, Plus, Spark, Video, Whats
 import { scrollToId } from '../utils/scroll';
 import { ease } from '../utils/easings';
 import { INTRO } from './Loader';
+import { DrawLine, LiveCard, useFloatProgress, useTimelineFill } from './fx/Live';
 
 const FACT_ICONS = [Clock, Video, Globe];
 
@@ -33,7 +34,14 @@ function Accordion({ items }: { items: readonly { q: string; a: string }[] }) {
   return (
     <div className="faq__list">
       {items.map((it, i) => (
-        <div key={it.q} className={`faq__item ${open === i ? 'is-open' : ''}`}>
+        <motion.div
+          key={it.q}
+          className={`faq__item ${open === i ? 'is-open' : ''}`}
+          initial={{ opacity: 0, x: 40 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          viewport={{ once: true, amount: 0.6 }}
+          transition={{ delay: i * 0.1, duration: 0.8, ease: ease('premium') }}
+        >
           <button onClick={() => setOpen(open === i ? null : i)} aria-expanded={open === i}>
             <span>{it.q}</span>
             <motion.span className="faq__plus" animate={{ rotate: open === i ? 45 : 0 }} transition={{ duration: 0.4, ease: ease('premium') }}>
@@ -53,7 +61,7 @@ function Accordion({ items }: { items: readonly { q: string; a: string }[] }) {
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
+        </motion.div>
       ))}
     </div>
   );
@@ -205,6 +213,9 @@ export default function ServicePage() {
   const page = key ? SERVICE_PAGES[lang][key] : null;
 
   useSeo(page?.seo.title ?? t.meta.title, page?.seo.description ?? '', t.meta.title);
+  const offerFloat = useFloatProgress();
+  const othersFloat = useFloatProgress();
+  const steps = useTimelineFill();
 
   if (!key || !item || !page) return <Navigate to="/" replace />;
 
@@ -261,20 +272,25 @@ export default function ServicePage() {
             </motion.div>
           </div>
 
-          <motion.ul className="sp-facts" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: d + 0.7, duration: 0.9 }}>
+          <ul className="sp-facts">
             {ui.facts.map((fct, i) => {
               const Ic = FACT_ICONS[i];
               return (
-                <li key={fct.t}>
+                <motion.li
+                  key={fct.t}
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: d + 0.7 + i * 0.12, duration: 0.8, ease: ease('out') }}
+                >
                   <span className="sp-facts__ic"><Ic size={18} /></span>
                   <span>
                     <small>{fct.t}</small>
                     <b>{fct.d}</b>
                   </span>
-                </li>
+                </motion.li>
               );
             })}
-          </motion.ul>
+          </ul>
         </div>
       </section>
 
@@ -294,20 +310,21 @@ export default function ServicePage() {
               <p>{page.why}</p>
             </FadeUp>
           </div>
-          <div className="sp-offer__grid">
+          <div className="sp-offer__grid" ref={offerFloat.ref}>
             {page.offer.map((o, i) => (
-              <motion.article
+              <LiveCard
+                as="article"
                 key={o.t}
+                index={i % 3}
+                depth={[0.4, 0.9, 0.6][i % 3]}
+                progress={offerFloat.progress}
                 className="sp-offer__card"
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.4 }}
-                transition={{ delay: (i % 3) * 0.08, duration: 0.7, ease: ease('out') }}
               >
                 <span className="sp-offer__n">{String(i + 1).padStart(2, '0')}</span>
+                <DrawLine className="sp-offer__rule" delay={0.3 + (i % 3) * 0.13} />
                 <h3>{o.t}</h3>
                 <p>{o.d}</p>
-              </motion.article>
+              </LiveCard>
             ))}
           </div>
         </div>
@@ -321,19 +338,42 @@ export default function ServicePage() {
             <MaskLine>{ui.stepsTitle[0]}</MaskLine>
             <MaskLine delay={0.1}><em>{ui.stepsTitle[1]}</em></MaskLine>
           </h2>
-          <ol className="sp-steps__list">
-            {page.steps.map((s, i) => (
-              <motion.li
-                key={s.t}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.5 }}
-                transition={{ delay: i * 0.1, duration: 0.7, ease: ease('out') }}
-              >
-                <span className="sp-steps__n">0{i + 1}</span>
-                <h3>{s.t}</h3>
-                <p>{s.d}</p>
-              </motion.li>
+          <ol className="sp-steps__list" ref={steps.ref}>
+            <span className="sp-steps__track" aria-hidden>
+              <motion.span style={{ scaleX: steps.fill }} />
+            </span>
+            {page.steps.map((st, i) => (
+              <LiveCard as="li" key={st.t} index={i}>
+                <motion.span
+                  className="sp-steps__node"
+                  initial={{ scale: 0 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: true, amount: 1 }}
+                  transition={{ delay: 0.4 + i * 0.18, duration: 0.6, ease: ease('bounce') }}
+                  aria-hidden
+                />
+                <motion.span
+                  className="sp-steps__bar"
+                  initial={{ scaleX: 0 }}
+                  whileInView={{ scaleX: 1 }}
+                  viewport={{ once: true, amount: 0.6 }}
+                  transition={{ delay: 0.35 + i * 0.18, duration: 0.9, ease: ease('premium') }}
+                  aria-hidden
+                />
+                <motion.span className="mask sp-steps__nmask" initial="h" whileInView="v" viewport={{ once: true, amount: 0.5 }}>
+                  <motion.span
+                    className="sp-steps__n"
+                    variants={{
+                      h: { y: '110%' },
+                      v: { y: 0, transition: { delay: 0.45 + i * 0.18, duration: 0.8, ease: ease('premium') } },
+                    }}
+                  >
+                    0{i + 1}
+                  </motion.span>
+                </motion.span>
+                <h3>{st.t}</h3>
+                <p>{st.d}</p>
+              </LiveCard>
             ))}
           </ol>
         </div>
@@ -349,8 +389,25 @@ export default function ServicePage() {
               <MaskLine delay={0.1}><em>{ui.bringTitle[1]}</em></MaskLine>
             </h2>
             <ul className="sp-bring__list">
-              {page.bring.map((b) => (
-                <li key={b}><span className="v-check"><Check size={11} /></span> {b}</li>
+              {page.bring.map((b, i) => (
+                <motion.li
+                  key={b}
+                  initial={{ opacity: 0, x: -24 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.8 }}
+                  transition={{ delay: i * 0.09, duration: 0.7, ease: ease('out') }}
+                >
+                  <motion.span
+                    className="v-check"
+                    initial={{ scale: 0, rotate: -90 }}
+                    whileInView={{ scale: 1, rotate: 0 }}
+                    viewport={{ once: true, amount: 0.8 }}
+                    transition={{ delay: 0.15 + i * 0.09, duration: 0.6, ease: ease('bounce') }}
+                  >
+                    <Check size={11} />
+                  </motion.span>
+                  {b}
+                </motion.li>
               ))}
             </ul>
             <p className="sp-bring__note">{ui.bringNote}</p>
@@ -397,13 +454,15 @@ export default function ServicePage() {
       <section className="sp-others">
         <div className="container">
           <p className="eyebrow"><span className="eyebrow__line" /> {ui.others}</p>
-          <div className="sp-others__grid">
-            {others.map((o) => (
-              <Link key={o.key} to={servicePath(o.key)} className="sp-others__card">
-                <span className="sp-others__n">{o.n}</span>
-                <b>{o.title} <em>{o.accent}</em></b>
-                <span className="sp-others__go">{ui.view} <Arrow size={14} /></span>
-              </Link>
+          <div className="sp-others__grid" ref={othersFloat.ref}>
+            {others.map((o, i) => (
+              <LiveCard key={o.key} index={i} depth={[0.4, 0.8, 0.5, 0.9][i % 4]} progress={othersFloat.progress} className="sp-others__wrap">
+                <Link to={servicePath(o.key)} className="sp-others__card">
+                  <span className="sp-others__n">{o.n}</span>
+                  <b>{o.title} <em>{o.accent}</em></b>
+                  <span className="sp-others__go">{ui.view} <Arrow size={14} /></span>
+                </Link>
+              </LiveCard>
             ))}
           </div>
         </div>

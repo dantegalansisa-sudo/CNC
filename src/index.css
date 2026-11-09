@@ -6412,3 +6412,250 @@ em {
 .insights .icard--1 {
   color: #fff;
 }
+
+/* =========================================================
+   v5 — Motion layer: live cards, timelines, living navy
+   ========================================================= */
+.live {
+  position: relative;
+  will-change: transform;
+  transition: box-shadow 0.5s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.4s;
+}
+
+.live:hover {
+  box-shadow: 0 46px 80px -46px rgba(12, 26, 58, 0.55);
+}
+
+.live__shine {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.45s;
+  background:
+    radial-gradient(460px circle at var(--mx, 50%) var(--my, 50%), rgba(35, 64, 143, 0.11), transparent 45%);
+}
+
+.live:hover .live__shine {
+  opacity: 1;
+}
+
+.icard--1 .live__shine,
+.audience__list li:hover .live__shine {
+  background:
+    radial-gradient(460px circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.16), transparent 45%);
+}
+
+/* Old CSS hover lifts are replaced by the motion springs */
+.audience__list li:hover,
+.usc__grid li:hover {
+  transform: none;
+}
+
+/* Offer cards: a rule draws under the number */
+.draw-line {
+  display: block;
+  height: 1px;
+  background: var(--gold);
+  transform-origin: left;
+}
+
+.sp-offer__rule {
+  width: 48px;
+  margin-top: 14px;
+}
+
+.sp-offer__card h3 {
+  margin-top: 16px;
+}
+
+.sp-others__wrap {
+  border-radius: 4px;
+}
+
+.sp-others__wrap .sp-others__card {
+  height: 100%;
+}
+
+.sp-others__card:hover {
+  transform: none;
+}
+
+/* Steps: scroll-driven timeline */
+.sp-steps__list {
+  position: relative;
+  padding-top: 34px;
+}
+
+.sp-steps__track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(12, 26, 58, 0.1);
+  overflow: hidden;
+}
+
+.sp-steps__track span {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, var(--ink), var(--gold));
+  transform-origin: left;
+}
+
+.sp-steps__list li {
+  border-top: 0;
+  overflow: visible;
+}
+
+.sp-steps__node {
+  position: absolute;
+  top: -41px;
+  left: 26px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  box-shadow: 0 0 0 6px rgba(35, 64, 143, 0.12);
+}
+
+.sp-steps__bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--ink);
+  transform-origin: left;
+}
+
+.sp-steps__nmask {
+  display: block;
+}
+
+.sp-steps__nmask .sp-steps__n {
+  display: inline-block;
+}
+
+/* Living navy: slow drifting light + faint engineered grid */
+.manifesto,
+.insights,
+.sp-hero,
+.sp-request {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.manifesto::before,
+.insights::before,
+.sp-hero::before,
+.sp-request::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 72px 72px;
+  -webkit-mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 20%, transparent 80%);
+  mask-image: radial-gradient(ellipse 75% 65% at 50% 45%, #000 20%, transparent 80%);
+  animation: grid-pan 40s linear infinite;
+}
+
+.manifesto::after,
+.insights::after,
+.sp-hero::after,
+.sp-request::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  top: -30%;
+  left: -15%;
+  width: min(70vw, 900px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, rgba(35, 64, 143, 0.55), transparent 62%);
+  animation: aurora 26s ease-in-out infinite alternate;
+}
+
+.insights::after,
+.sp-request::after {
+  left: auto;
+  right: -20%;
+  animation-delay: -9s;
+}
+
+@keyframes grid-pan {
+  to {
+    background-position: 72px 72px, 72px 72px;
+  }
+}
+
+@keyframes aurora {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30vw, 18vh) scale(1.15);
+  }
+  100% {
+    transform: translate(10vw, 40vh) scale(0.95);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .manifesto::before,
+  .insights::before,
+  .sp-hero::before,
+  .sp-request::before,
+  .manifesto::after,
+  .insights::after,
+  .sp-hero::after,
+  .sp-request::after {
+    animation: none;
+  }
+}
+
+@media (max-width: 1080px) {
+  .sp-steps__track,
+  .sp-steps__node {
+    display: none;
+  }
+
+  .sp-steps__list {
+    padding-top: 0;
+  }
+}
+
+.audience__list li {
+  background: var(--bg);
+  border: 1px solid var(--line);
+}
+
+.sp-offer__grid {
+  gap: 16px;
+  border: 0;
+}
+
+.sp-offer__card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.sp-offer__card:hover {
+  background: var(--paper);
+  border-color: rgba(35, 64, 143, 0.35);
+}
+
+.audience__list li:hover .audience__n {
+  color: var(--gold-2);
+}
