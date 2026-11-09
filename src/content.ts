@@ -37,7 +37,7 @@ const en = {
   langLabel: 'Español',
   hero: {
     eyebrow: ['Contracts', 'Notary', 'Civil Law'],
-    title1: 'legal counsel',
+    title1: 'Legal counsel',
     title2a: 'you can',
     title2b: 'trust',
     lead: 'CNC Law Firm advises individuals, businesses and public and private entities in contracts, notary, civil and administrative law — in Puerto Rico and for clients across the United States.',
@@ -329,7 +329,7 @@ const es: typeof en = {
   langLabel: 'English',
   hero: {
     eyebrow: ['Contratos', 'Notaría', 'Derecho civil'],
-    title1: 'asesoría legal',
+    title1: 'Asesoría legal',
     title2a: 'en la que',
     title2b: 'confías',
     lead: 'CNC Law Firm asesora a personas, empresas y entidades públicas y privadas en contratos, notaría, derecho civil y administrativo — en Puerto Rico y para clientes en todo Estados Unidos.',

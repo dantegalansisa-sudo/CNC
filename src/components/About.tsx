@@ -53,9 +53,9 @@ export default function About() {
           <motion.div
             className="about__arch about__arch--photo"
             variants={{
-              hidden: { clipPath: 'inset(100% 0% 0% 0% round 400px 400px 32px 32px)' },
+              hidden: { clipPath: 'inset(100% 0% 0% 0% round 6px 6px 6px 6px)' },
               show: {
-                clipPath: 'inset(0% 0% 0% 0% round 400px 400px 32px 32px)',
+                clipPath: 'inset(0% 0% 0% 0% round 6px 6px 6px 6px)',
                 transition: { duration: 1.3, ease: ease('premium') },
               },
             }}

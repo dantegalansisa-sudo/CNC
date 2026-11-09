@@ -3,7 +3,7 @@ import { motion, useMotionValue, useScroll, useSpring, useTransform } from 'fram
 import { MaskLine } from './RevealText';
 import MagneticButton from './MagneticButton';
 import { Monogram } from './Logo';
-import { Arrow, Facebook, Instagram, Mail, Phone, Scale, Spark, WhatsAppLogo } from './Icons';
+import { Arrow, Facebook, Instagram, Mail, Phone, Spark, WhatsAppLogo } from './Icons';
 import { FIRM, TEL, waLink } from '../content';
 import { useLang } from '../i18n';
 import { scrollToId } from '../utils/scroll';
@@ -25,12 +25,6 @@ function RingBadge({ size = 112, text }: { size?: number; text: string }) {
     </span>
   );
 }
-
-const chip = (d: number) => ({
-  initial: { opacity: 0, scale: 0.6, y: 20 },
-  animate: { opacity: 1, scale: 1, y: 0 },
-  transition: { duration: 0.8, delay: INTRO + d, ease: ease('bounce') },
-});
 
 /* ------------------------------------------------------------------ */
 /* DESKTOP HERO                                                        */
@@ -108,7 +102,7 @@ function HeroDesktop() {
 
       <motion.div
         className="hero-d__visual"
-        initial={{ clipPath: 'inset(12% 8% 12% 8% round 48px)', opacity: 0 }}
+        initial={{ clipPath: 'inset(12% 8% 12% 8% round 6px)', opacity: 0 }}
         animate={{ clipPath: 'inset(0% 0% 0% 0% round 0px)', opacity: 1 }}
         transition={{ duration: 1.3, delay: INTRO - 0.15, ease: ease('premium') }}
       >
@@ -127,12 +121,6 @@ function HeroDesktop() {
           </div>
           <img className="hcard__watermark" src="/images/cnc-mark.png" alt="" aria-hidden />
 
-          <motion.div className="hcard__sig" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: INTRO + 0.6, duration: 1.2 }}>
-            <span className="script">Cynthia</span>
-            <span className="script script--2">Morales Nieves</span>
-            <small>{h.sigRole}</small>
-          </motion.div>
-
           <motion.div className="hcard__photo" style={{ y: photoY }}>
             <motion.img
               src="/images/cynthia.webp"
@@ -144,14 +132,15 @@ function HeroDesktop() {
             />
           </motion.div>
 
-          <motion.div className="fchip fchip--a" {...chip(0.7)}>
-            <span className="fchip__ic"><Scale size={13} /></span> {h.chips[0]}
-          </motion.div>
-          <motion.div className="fchip fchip--b" {...chip(0.85)}>
-            <span className="fchip__dot" /> {h.chips[1]} <small>{h.chipSub}</small>
-          </motion.div>
-          <motion.div className="fchip fchip--c" {...chip(1)}>
-            <span className="fchip__ic fchip__ic--wine"><Spark size={12} /></span> {h.chips[2]}
+          <motion.div
+            className="hcard__plate"
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: INTRO + 0.7, duration: 1, ease: ease('out') }}
+          >
+            <span className="hcard__plate-role">{h.sigRole}</span>
+            <strong>Lcda. Cynthia Morales Nieves</strong>
+            <span className="hcard__plate-loc">{h.eyebrow.join(' · ')}</span>
           </motion.div>
         </motion.div>
 
@@ -168,13 +157,6 @@ function HeroDesktop() {
           <RingBadge text={h.ring} />
         </motion.a>
 
-        <motion.div className="notch notch--left" initial={{ x: -30, opacity: 0 }} animate={{ x: 0, opacity: 1 }} transition={{ delay: INTRO + 0.75, duration: 0.9, ease: ease('out') }}>
-          <span className="nbubble nbubble--photo" />
-          <a className="nbubble nbubble--wa" href={waLink(t.wa.msg)} target="_blank" rel="noopener noreferrer" aria-label={t.wa.cta} data-cursor="Chat"><WhatsAppLogo size={34} /></a>
-          <button className="nbubble nbubble--ink" onClick={() => scrollToId('servicios')} aria-label={t.practice.eyebrow} data-cursor="Areas">
-            <Arrow size={20} />
-          </button>
-        </motion.div>
       </motion.div>
     </div>
   );
@@ -194,8 +176,8 @@ function HeroMobile() {
     <div className="hero-m">
       <motion.div
         className="mcard"
-        initial={{ clipPath: 'inset(8% 6% 30% 6% round 40px)' }}
-        animate={{ clipPath: 'inset(0% 0% 0% 0% round 34px)' }}
+        initial={{ clipPath: 'inset(8% 6% 30% 6% round 6px)' }}
+        animate={{ clipPath: 'inset(0% 0% 0% 0% round 6px)' }}
         transition={{ duration: 1.3, delay: INTRO - 0.2, ease: ease('premium') }}
       >
         <div className="mcard__bg" />
@@ -219,17 +201,6 @@ function HeroMobile() {
           transition={{ duration: 1.3, delay: INTRO + 0.05, ease: ease('out') }}
           draggable={false}
         />
-
-        <motion.span className="mcard__sig script" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: INTRO + 0.8, duration: 1.2 }}>
-          Cynthia Morales Nieves
-        </motion.span>
-
-        <motion.div className="fchip fchip--m1" {...chip(0.8)}>
-          <span className="fchip__ic"><Scale size={11} /></span> {h.chips[0]}
-        </motion.div>
-        <motion.div className="fchip fchip--m2" {...chip(0.95)}>
-          <span className="fchip__dot" /> EN · ES
-        </motion.div>
 
         <motion.div
           className="mcard__panel"
